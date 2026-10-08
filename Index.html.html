@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Which OPTCG Color Fits You?</title>
+<style>
+html,body{margin:0;padding:0;background:#0b1020;color:#f5f7fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+*{box-sizing:border-box;}
+body{min-height:100vh;background:linear-gradient(180deg,#08101d 0%,#0b1020 100%);}
+button{font:inherit;-webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 60px;}
+.hero,.card{background:#151c30;border:1px solid #2b3857;border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.2);}
+.hero{margin-bottom:14px;}
+h1{font-size:30px;line-height:1.15;margin:0 0 8px;}
+h2{font-size:26px;line-height:1.2;margin:0 0 10px;}
+p{line-height:1.5;}
+.muted{color:#aab4c8;}
+.track{height:9px;background:#0e1525;border-radius:99px;overflow:hidden;margin-top:16px;}
+.bar{height:100%;width:0;background:#f5c84b;transition:width .18s ease;}
+.progress{text-align:right;color:#aab4c8;font-size:13px;margin-top:6px;}
+.qnum{color:#f5c84b;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
+.q{font-size:22px;font-weight:750;line-height:1.35;margin:8px 0 16px;}
+.answers{display:block;}
+.answer{display:block;width:100%;text-align:left;background:#1d2740;color:#f5f7fb;border:1px solid #2b3857;border-radius:14px;padding:14px;margin:0 0 10px;font-size:16px;line-height:1.4;cursor:pointer;}
+.answer:hover{background:#222e4a;border-color:#4c5e82;}
+.answer:active{transform:scale(.995);}
+.answer b{color:#f5c84b;margin-right:8px;}
+.nav{margin-top:14px;}
+.nav:after{content:"";display:block;clear:both;}
+.action{border:0;border-radius:12px;padding:12px 15px;font-weight:800;font-size:15px;cursor:pointer;margin:0 8px 8px 0;}
+.primary{background:#f5c84b;color:#181508;}
+.secondary{background:#273451;color:#f5f7fb;}
+.hidden{display:none !important;}
+.pills{margin:8px 0 12px;}
+.pill{display:inline-block;padding:7px 10px;border-radius:99px;background:#202b45;border:1px solid #2b3857;font-weight:800;margin:3px 4px 3px 0;}
+.score-grid{margin:0 -5px;}
+.score-grid:after{content:"";display:block;clear:both;}
+.score{float:left;width:50%;padding:5px;}
+.score-inner{background:#0f1728;border:1px solid #2b3857;border-radius:14px;padding:12px;min-height:88px;}
+.head{font-weight:800;}
+.head .value{float:right;}
+.meter{height:8px;background:#242f49;border-radius:99px;overflow:hidden;margin-top:7px;}
+.meter div{height:100%;}
+.box{margin-top:14px;background:#0f1728;border:1px solid #2b3857;border-radius:14px;padding:14px;}
+.box h3{margin:0 0 7px;font-size:18px;}
+.small{font-size:12px;color:#aab4c8;text-align:center;margin-top:18px;line-height:1.5;}
+.compat{display:none;background:#4b1f1f;border:1px solid #8a3b3b;color:#fff;padding:12px;border-radius:12px;margin-bottom:14px;}
+noscript .compat{display:block;}
+@media (min-width:650px){.score{width:33.3333%;}}
+@media (max-width:390px){h1{font-size:27px;}.q{font-size:20px;}.wrap{padding-left:10px;padding-right:10px;}.hero,.card{padding:15px;border-radius:16px;}}
+@media (prefers-reduced-motion:reduce){.bar{transition:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <noscript><div class="compat">This quiz needs JavaScript to calculate results. Open this file in Safari, Chrome, Edge, Firefox, Samsung Internet, or another browser with JavaScript enabled.</div></noscript>
+  <div id="jsWarning" class="compat">The quiz could not start in this preview. Use “Open in Browser” and open the file in Safari, Chrome, Edge, Firefox, or Samsung Internet.</div>
+
+  <div class="hero">
+    <h1>Which OPTCG Color Fits You?</h1>
+    <p class="muted">30 questions about how you naturally like to play the One Piece Card Game. Answer based on what feels fun — not what is strongest in the current meta.</p>
+    <div class="track" aria-hidden="true"><div id="bar" class="bar"></div></div>
+    <div id="progress" class="progress">Loading quiz…</div>
+  </div>
+
+  <div id="quiz" class="card">
+    <div id="qnum" class="qnum">Loading…</div>
+    <div id="q" class="q">Preparing Question 1…</div>
+    <div id="answers" class="answers"></div>
+    <div class="nav"><button id="back" type="button" class="action secondary">Back</button></div>
+  </div>
+
+  <div id="results" class="card hidden">
+    <h2>Your OPTCG Color Profile</h2>
+    <div id="pills" class="pills"></div>
+    <div id="scores" class="score-grid"></div>
+    <div class="box"><h3>Best Mono Color</h3><p id="mono"></p></div>
+    <div class="box"><h3>Best Dual-Color Combination</h3><p id="dual"></p></div>
+    <div class="box"><h3>Your Natural Playstyle</h3><p id="style"></p></div>
+    <div class="nav">
+      <button id="copyBtn" type="button" class="action primary">Copy Result</button>
+      <button id="restartBtn" type="button" class="action secondary">Restart</button>
+    </div>
+  </div>
+
+  <div class="small">Fan-made playstyle quiz. Not affiliated with Bandai or the official ONE PIECE Card Game. Results reflect preference, not deck strength.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+var COLORS={"red":{"n":"Red","e":"🔴","h":"#ef4444","core":"Power / Combat","d":"Aggressive pressure, power manipulation, Rush and decisive finishing turns."},"green":{"n":"Green","e":"🟢","h":"#22c55e","core":"Position / Tempo","d":"Resting, restanding and controlling which cards are allowed to function."},"blue":{"n":"Blue","e":"🔵","h":"#3b82f6","core":"Zones / Card Flow","d":"Bounce, bottom-deck, filtering and flexible card advantage."},"purple":{"n":"Purple","e":"🟣","h":"#a855f7","core":"DON!! / Resources","d":"Ramp, DON!! manipulation, resource conversion and explosive future turns."},"black":{"n":"Black","e":"⚫","h":"#64748b","core":"Cost / Removal","d":"Cost manipulation, efficient removal, attrition and structured board control."},"yellow":{"n":"Yellow","e":"🟡","h":"#eab308","core":"Life / Trigger","d":"Life manipulation, Trigger value, comeback mechanics and calculated risk."}};
+var DUAL={"black-yellow":"Removal + Life. Control key threats while using Life and Trigger value to survive and reverse games.","green-yellow":"Tempo + Life. Manipulate the battlefield while using Life as an active resource.","red-yellow":"Pressure + Life. Aggressive combat backed by Trigger value and dangerous comeback turns.","purple-yellow":"DON!! + Life. Manage two resource systems at once for flexible, technical turns.","blue-yellow":"Zones + Life. Grindy card advantage, unusual removal and Life manipulation.","black-red":"Power + Cost. Remove what matters, then convert board advantage into lethal pressure.","black-green":"Position + Cost. Disable threats, lower costs and systematically control the board.","black-blue":"Zones + Cost. Highly efficient removal with strong card-flow and control tools.","black-purple":"DON!! + Cost. Ramp into large threats while removing important opposing pieces.","green-red":"Combat + Position. Proactive pressure with strong tempo and rest/restand tricks.","blue-red":"Combat + Zones. Pressure backed by bounce, filtering and tempo removal.","purple-red":"Combat + DON!!. Explosive turns powered by resource acceleration.","blue-green":"Position + Zones. Heavy tempo; control where cards are and whether they can act.","green-purple":"Position + DON!!. Resource manipulation combined with battlefield control.","blue-purple":"Zones + DON!!. Flexible card flow, ramp and resource-heavy midrange/control."};
+var QUESTIONS=[["Your opponent develops a strong early Character. What feels best?",[["Pressure them immediately for spending DON!! on it.",{"red":2}],["Disable it so it cannot function properly.",{"green":2}],["Remove it cleanly and keep building advantage.",{"black":2}],["Ignore it for now and build toward a stronger future turn.",{"purple":2}]]],["Which victory feels most satisfying?",[["They simply could not survive my pressure.",{"red":2}],["I squeezed away all their useful options.",{"black":2,"blue":1}],["I survived something ridiculous and reversed the game.",{"yellow":2}],["I built such a resource lead that the result became inevitable.",{"purple":2}]]],["You can develop board now or hold back. What feels more natural?",[["Develop now. Make them answer me.",{"red":2,"green":1}],["Hold resources so I can stay flexible.",{"blue":2}],["Choose based entirely on what their next turn can do.",{"black":1,"green":1}],["Accept a weaker turn if it creates a stronger future turn.",{"purple":2}]]],["Which mistake annoys you most?",[["Missing lethal.",{"red":2}],["Removing the wrong target.",{"black":2}],["Wasting DON!! or a resource I needed later.",{"purple":2}],["Letting an opposing Character get value when I could have disabled it.",{"green":2}]]],["Your ideal Character is:",[["Cheap and immediately dangerous.",{"red":2}],["Efficient and replaces itself with cards/value.",{"blue":2}],["A huge late-game threat that takes over the game.",{"purple":2}],["Something disruptive that interferes with the opponent.",{"black":1,"green":1}]]],["How do you feel about taking Life early?",[["Fine. The extra card can help me pressure.",{"red":1,"yellow":1}],["Only if the hand advantage is worth the risk.",{"blue":1,"yellow":1}],["Sometimes I actively want my Life total to change.",{"yellow":2}],["I dislike losing Life unless absolutely necessary.",{"black":1,"green":1}]]],["Your opponent has a huge 10-cost Character. Which answer feels best?",[["Make it weaker and fight through it.",{"red":2}],["Send it somewhere it cannot easily return from.",{"blue":2}],["Change its cost and destroy it efficiently.",{"black":2}],["Keep it from acting rather than necessarily removing it.",{"green":2}]]],["Which sentence sounds most like you?",[["They cannot execute their plan if they are already dead.",{"red":2}],["I want more options than my opponent.",{"blue":2}],["I want every card to trade efficiently.",{"black":2}],["I will sacrifice something now for a stronger future turn.",{"purple":2}]]],["Which advantage would you rather have?",[["More attacking power.",{"red":2}],["More board control.",{"green":1,"black":1}],["More DON!! or resource acceleration.",{"purple":2}],["Better card quality and selection.",{"blue":2}]]],["The opponent has three Characters. What do you want to do?",[["Attack around them and pressure Life.",{"red":2}],["Control which ones are Active or Rested.",{"green":2}],["Systematically remove the important ones.",{"black":2}],["Bounce or reposition them through zones.",{"blue":2}]]],["You are behind. Which comeback tool sounds best?",[["One explosive attack turn.",{"red":2}],["A powerful Life/Trigger swing.",{"yellow":2}],["A huge removal sequence.",{"black":2}],["Ramp into something far bigger than they can handle.",{"purple":2}]]],["How far ahead do you enjoy planning?",[["Mostly this turn and the next.",{"red":2}],["About two turns ahead.",{"green":1,"black":1}],["Several turns ahead with resource setup.",{"purple":2}],["Several branches depending on what they do.",{"blue":2}]]],["Which type of sequencing do you enjoy most?",[["Attack sequencing that creates lethal.",{"red":2}],["Removal pieces in the correct order.",{"black":2}],["DON!! and resource sequencing.",{"purple":2}],["Draw/search/zone sequencing.",{"blue":2}]]],["Which resource are you most comfortable deliberately spending?",[["Cards from hand.",{"red":1,"blue":1}],["Board presence.",{"black":1,"green":1}],["DON!!.",{"purple":2}],["Life.",{"yellow":2}]]],["Which opponent annoys you most?",[["Someone who keeps healing and refuses to die.",{"red":2}],["Someone who keeps bouncing my board.",{"green":1,"black":1}],["Someone who ramps into huge Characters too early.",{"blue":1,"black":1}],["Someone who keeps my Characters rested and unusable.",{"green":2}]]],["If your Leader effect needs a downside, which feels easiest to accept?",[["Discard a card.",{"red":1,"black":1}],["Return DON!! to the DON!! deck.",{"purple":2}],["Manipulate or reduce my Life.",{"yellow":2}],["Rest something I control.",{"green":2}]]],["You can take only one action. Which feels best?",[["Create another attacker.",{"red":2}],["Remove their best Character.",{"black":2}],["Draw/search for more options.",{"blue":2}],["Invest in future resources.",{"purple":2}]]],["You would rather win because the opponent:",[["Could not keep up with your attacks.",{"red":2}],["Ran out of meaningful cards.",{"blue":1,"black":1}],["Could never maintain a board.",{"black":2}],["Could never predict what your resources would become.",{"purple":2}]]],["Your opponent attacks your Leader. Your instinct is:",[["Take it unless protecting Life is essential.",{"red":1,"yellow":1}],["Ask whether the Life card improves my future turn.",{"yellow":2}],["Protect Life because I want the game to go long.",{"black":1,"blue":1}],["It depends on whether changing Life activates my engine.",{"yellow":2}]]],["Which deck description sounds most fun?",[["Fast, proactive and punishing.",{"red":2}],["Interactive, disruptive and tactical.",{"green":1,"black":1}],["Resource-heavy with explosive late turns.",{"purple":2}],["Resilient, unpredictable and difficult to finish off.",{"yellow":2}]]],["You already have a strong board. What next?",[["Convert it into lethal pressure now.",{"red":2}],["Lock down their ability to respond.",{"green":2}],["Keep removing whatever they play.",{"black":2}],["Draw/search so I do not run out of gas.",{"blue":2}]]],["Which uncertainty do you enjoy most?",[["Combat math: can I create lethal?",{"red":2}],["Positioning: what should be Active or Rested?",{"green":2}],["Resource planning: what will my DON!! look like next turn?",{"purple":2}],["Life/Trigger probability.",{"yellow":2}]]],["What would make you happiest in a tournament game?",[["Finding an unexpected lethal line.",{"red":2}],["Reading their turn and shutting it down.",{"black":1,"green":1}],["Executing a multi-step engine exactly as planned.",{"purple":1,"blue":1}],["Surviving at 1 Life and completely reversing the game.",{"yellow":2}]]],["Your preferred pace of game is:",[["Relatively quick.",{"red":2}],["Medium length with constant interaction.",{"green":1,"black":1}],["Long, where small advantages accumulate.",{"blue":1,"black":1}],["Any length, as long as the decisions are complex.",{"purple":1,"yellow":1}]]],["How do you feel about risk?",[["I will risk losing if I can win immediately.",{"red":2}],["Calculated risks while keeping control.",{"black":1,"green":1}],["I prefer consistency and inevitability.",{"blue":1,"black":1}],["I like controlled gambling when I can manipulate the odds.",{"yellow":2}]]],["Choose one superpower for your deck:",[["Make attacks much harder to defend.",{"red":2}],["Decide which opposing Characters are allowed to function.",{"green":2}],["Remove almost anything if I sequence correctly.",{"black":2}],["Turn one resource into another for value.",{"purple":2}]]],["One opposing Character matters far more than the others. You prefer to:",[["Ignore it and pressure Leader.",{"red":2}],["Disable it while developing my board.",{"green":2}],["Delete it immediately.",{"black":2}],["Remove it without giving KO/graveyard value.",{"blue":2}]]],["Which question is most natural to you?",[["How do I win this turn?",{"red":2}],["How do I make their next turn bad?",{"green":2}],["How do I make my next two turns better?",{"purple":2}],["How do I reach a state where they cannot beat me?",{"black":1,"yellow":1}]]],["When learning a new deck, what interests you first?",[["Attack patterns and lethal math.",{"red":2}],["Matchup-specific disruption.",{"green":1,"black":1}],["Resource curves and sequencing.",{"purple":2}],["Engine interactions and card advantage.",{"blue":2}]]],["Which fantasy sounds coolest?",[["Relentless pirate captain leading an assault.",{"red":2}],["Tactical commander controlling the battlefield.",{"green":1,"black":1}],["Master strategist manipulating resources behind the scenes.",{"purple":1,"blue":1}],["Survivor who keeps turning impossible situations around.",{"yellow":2}]]]];
+var COLOR_ORDER=["red","green","blue","purple","black","yellow"];
+var current=0;
+var picks=[];
+var el={};
+var started=false;
+
+function byId(id){return document.getElementById(id);}
+function setText(node,value){
+  if("textContent" in node){node.textContent=value;}
+  else{node.innerText=value;}
+}
+function hide(node){node.style.display="none";}
+function show(node){node.style.display="block";}
+function topOfPage(){
+  try{window.scrollTo(0,0);}catch(e){}
+}
+function clearChildren(node){
+  while(node.firstChild){node.removeChild(node.firstChild);}
+}
+function make(tag,className){
+  var n=document.createElement(tag);
+  if(className){n.className=className;}
+  return n;
+}
+function addScore(scoreMap,weights){
+  var k;
+  for(k in weights){
+    if(Object.prototype.hasOwnProperty.call(weights,k)){
+      scoreMap[k]+=weights[k];
+    }
+  }
+}
+function initPicks(){
+  var n;
+  picks=[];
+  for(n=0;n<QUESTIONS.length;n++){picks[n]=null;}
+}
+function initElements(){
+  el.warning=byId("jsWarning");
+  el.bar=byId("bar");
+  el.progress=byId("progress");
+  el.quiz=byId("quiz");
+  el.results=byId("results");
+  el.qnum=byId("qnum");
+  el.q=byId("q");
+  el.answers=byId("answers");
+  el.back=byId("back");
+  el.pills=byId("pills");
+  el.scores=byId("scores");
+  el.mono=byId("mono");
+  el.dual=byId("dual");
+  el.style=byId("style");
+  el.copy=byId("copyBtn");
+  el.restart=byId("restartBtn");
+}
+function render(){
+  var item=QUESTIONS[current];
+  var list=item[1];
+  var j,button,label;
+  setText(el.qnum,"Question "+(current+1));
+  setText(el.q,item[0]);
+  clearChildren(el.answers);
+
+  for(j=0;j<list.length;j++){
+    button=make("button","answer");
+    button.type="button";
+    button.setAttribute("data-index",String(j));
+    label=make("b","");
+    setText(label,String.fromCharCode(65+j)+".");
+    button.appendChild(label);
+    button.appendChild(document.createTextNode(list[j][0]));
+    button.onclick=function(){
+      var idx=parseInt(this.getAttribute("data-index"),10);
+      choose(idx);
+    };
+    el.answers.appendChild(button);
+  }
+  el.back.style.visibility=current===0?"hidden":"visible";
+  el.bar.style.width=Math.round((current/QUESTIONS.length)*100)+"%";
+  setText(el.progress,"Question "+(current+1)+" of "+QUESTIONS.length);
+}
+function choose(index){
+  picks[current]=index;
+  if(current<QUESTIONS.length-1){
+    current++;
+    render();
+    topOfPage();
+  }else{
+    showResults();
+  }
+}
+function goBack(){
+  if(current>0){
+    current--;
+    render();
+    topOfPage();
+  }
+}
+function calculate(){
+  var scores={red:0,green:0,blue:0,purple:0,black:0,yellow:0};
+  var qi,pick,weights;
+  for(qi=0;qi<QUESTIONS.length;qi++){
+    pick=picks[qi];
+    if(pick===null){continue;}
+    weights=QUESTIONS[qi][1][pick][1];
+    addScore(scores,weights);
+  }
+  return scores;
+}
+function sortedColors(scores){
+  var list=COLOR_ORDER.slice(0);
+  list.sort(function(a,b){
+    if(scores[b]!==scores[a]){return scores[b]-scores[a];}
+    return COLOR_ORDER.indexOf(a)-COLOR_ORDER.indexOf(b);
+  });
+  return list;
+}
+function styleFor(a,b){
+  var pair={};
+  pair[a]=true; pair[b]=true;
+  if(pair.yellow&&pair.black){return "Resource-control / attrition. You like surviving pressure, identifying key threats and turning Life advantage into inevitability.";}
+  if(pair.yellow&&pair.green){return "Tempo-midrange. You like controlling the battlefield while using Life and Trigger value to create swing turns.";}
+  if(pair.yellow&&pair.red){return "Aggressive midrange. You want pressure, but you also enjoy comeback turns and using Life as a weapon.";}
+  if(pair.yellow&&pair.purple){return "Resource engine. You enjoy managing DON!! and Life together to create high-value turns.";}
+  if(pair.black&&pair.red){return "Proactive control. Remove what matters, establish board advantage, then finish decisively.";}
+  if(pair.black&&pair.green){return "Tactical control. Deny the opponent's best actions and win through board superiority.";}
+  if(a==="red"){return "Aggro / pressure. You naturally look for initiative, attack sequencing and lethal windows.";}
+  if(a==="green"){return "Tempo / battlefield control. You naturally think about who gets to act and when.";}
+  if(a==="blue"){return "Value / control. You enjoy options, card flow and manipulating zones.";}
+  if(a==="purple"){return "Ramp / resource engine. You enjoy sacrificing current tempo for stronger future turns.";}
+  if(a==="black"){return "Removal midrange / control. You identify priority threats and trade efficiently.";}
+  return "Life-based midrange / comeback. You enjoy calculated risk, Trigger value and turning low Life into advantage.";
+}
+function pairKey(a,b){
+  return a<b?a+"-"+b:b+"-"+a;
+}
+function showResults(){
+  var scores=calculate();
+  var order=sortedColors(scores);
+  var first=order[0],second=order[1];
+  var max=0,i,c,outer,inner,head,name,value,meter,fill,core,pill,key,desc;
+
+  for(i=0;i<COLOR_ORDER.length;i++){
+    c=COLOR_ORDER[i];
+    if(scores[c]>max){max=scores[c];}
+  }
+
+  hide(el.quiz);
+  show(el.results);
+  el.bar.style.width="100%";
+  setText(el.progress,"Complete");
+
+  clearChildren(el.pills);
+  pill=make("span","pill");
+  setText(pill,COLORS[first].e+" #1 "+COLORS[first].n);
+  el.pills.appendChild(pill);
+  pill=make("span","pill");
+  setText(pill,COLORS[second].e+" #2 "+COLORS[second].n);
+  el.pills.appendChild(pill);
+
+  clearChildren(el.scores);
+  for(i=0;i<order.length;i++){
+    c=order[i];
+    outer=make("div","score");
+    inner=make("div","score-inner");
+    head=make("div","head");
+    name=make("span","");
+    value=make("span","value");
+    setText(name,COLORS[c].e+" "+COLORS[c].n);
+    setText(value,String(scores[c]));
+    head.appendChild(name);
+    head.appendChild(value);
+    meter=make("div","meter");
+    fill=make("div","");
+    fill.style.width=(max?Math.round((scores[c]/max)*100):0)+"%";
+    fill.style.backgroundColor=COLORS[c].h;
+    meter.appendChild(fill);
+    core=make("div","muted");
+    core.style.fontSize="12px";
+    core.style.marginTop="6px";
+    setText(core,COLORS[c].core);
+    inner.appendChild(head);
+    inner.appendChild(meter);
+    inner.appendChild(core);
+    outer.appendChild(inner);
+    el.scores.appendChild(outer);
+  }
+
+  el.mono.innerHTML="<strong>"+COLORS[first].e+" "+COLORS[first].n+"</strong> — "+COLORS[first].d;
+  key=pairKey(first,second);
+  desc=DUAL[key]||COLORS[first].core+" + "+COLORS[second].core+".";
+  el.dual.innerHTML="<strong>"+COLORS[first].e+COLORS[second].e+" "+COLORS[first].n+"/"+COLORS[second].n+"</strong> — "+desc;
+  setText(el.style,styleFor(first,second));
+  topOfPage();
+}
+function resultText(){
+  var scores=calculate();
+  var order=sortedColors(scores);
+  var first=order[0],second=order[1];
+  return "My OPTCG Color Personality:\n#1 "+COLORS[first].e+" "+COLORS[first].n+
+    "\n#2 "+COLORS[second].e+" "+COLORS[second].n+
+    "\nBest dual color: "+COLORS[first].e+COLORS[second].e+" "+COLORS[first].n+"/"+COLORS[second].n+
+    "\nPlaystyle: "+styleFor(first,second);
+}
+function copyResult(){
+  var text=resultText();
+  var area=document.createElement("textarea");
+  var successful=false;
+  area.value=text;
+  area.setAttribute("readonly","readonly");
+  area.style.position="fixed";
+  area.style.left="-9999px";
+  area.style.top="0";
+  document.body.appendChild(area);
+  try{
+    area.focus();
+    area.select();
+    if(area.setSelectionRange){area.setSelectionRange(0,area.value.length);}
+    successful=document.execCommand&&document.execCommand("copy");
+  }catch(e){successful=false;}
+  document.body.removeChild(area);
+  if(successful){window.alert("Result copied!");}
+  else{window.prompt("Copy your result:",text);}
+}
+function restart(){
+  current=0;
+  initPicks();
+  hide(el.results);
+  show(el.quiz);
+  render();
+  topOfPage();
+}
+function start(){
+  try{
+    initElements();
+    if(!el.quiz||!el.q||!el.answers||!QUESTIONS||QUESTIONS.length!==30){throw new Error("Quiz elements missing");}
+    initPicks();
+    el.back.onclick=goBack;
+    el.copy.onclick=copyResult;
+    el.restart.onclick=restart;
+    hide(el.warning);
+    hide(el.results);
+    show(el.quiz);
+    render();
+    started=true;
+  }catch(err){
+    if(el.warning){show(el.warning);}
+    if(el.progress){setText(el.progress,"Open this file in a browser");}
+  }
+}
+if(document.readyState==="loading"){
+  if(document.addEventListener){document.addEventListener("DOMContentLoaded",start,false);}
+  else if(window.attachEvent){window.attachEvent("onload",start);}
+}else{start();}
+setTimeout(function(){
+  if(!started){
+    var w=byId("jsWarning");
+    if(w){show(w);}
+  }
+},1500);
+})();
+</script>
+</body>
+</html>
